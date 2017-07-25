@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <set>
 #include <cmath>
+#include <limits>
 
 inline double
 sum1(std::vector<double>& v)
@@ -134,18 +135,18 @@ sum_kahan_optimized( std::vector<double>& v )
 
 
 inline size_t
-getExp( double x ) {
+get_exponent( double x ) {
+    static_assert( std::numeric_limits<double>::is_iec559 );
     union U {
-        double dval;
+        double value;
         struct {
-            uint64_t mantisa  : 52;
-            uint64_t exponent : 11;
-            uint64_t sign     :  1;
+            size_t mantisa  : 52;
+            size_t exponent : 11;
+            size_t sign     :  1;
         } parts;
     };
-    U u;
-    u.dval = x;
-    return u.parts.exponent;
+    static_assert( sizeof(U) == sizeof(double) );
+    return reinterpret_cast<U&>( x ).parts.exponent;
 }
 
 
@@ -161,7 +162,7 @@ sum_fast_stable( std::vector<double>& v )
         // DBG(i);
         auto x = v.at(i);
         // DBG(x);
-        auto idx = getExp( x );
+        auto idx = get_exponent( x );
         auto& part_sum = part_sums.at(idx);
 
         auto part_sum_new = x + part_sum;
@@ -172,7 +173,7 @@ sum_fast_stable( std::vector<double>& v )
             v.at(i) = diff;
             --i;
         }
-        if( getExp(part_sum_new) != idx ) {
+        if( get_exponent(part_sum_new) != idx ) {
             v.at(i) = part_sum_new;
             part_sum = 0;
             --i;
