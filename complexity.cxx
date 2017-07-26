@@ -9,7 +9,9 @@
 #include "dbg.h"
 
 // auto generator = generate_uniform_positive;
-auto generator = generate_exponential_positive;
+// auto generator = generate_exponential_positive;
+// auto generator = generate_exponential_pos_neg_pairs;
+auto generator = generate_uniform_power_pos_neg_pairs;
 
 
 BOOST_AUTO_TEST_CASE(test_sum1)
@@ -165,7 +167,7 @@ BOOST_AUTO_TEST_CASE(test_simple_double)
 
 BOOST_AUTO_TEST_CASE(test_simple_long_double)
 {
-    std::cout << "=================== Complexity of sum_simple_long_double =====" << std::endl;
+    std::cout << "=================== Complexity of sum_simple<long double> =====" << std::endl;
     evaluate_complexity(
             sum_simple<long double>,
             generator,
@@ -177,8 +179,87 @@ BOOST_AUTO_TEST_CASE(test_simple_long_double)
 
 
 
+BOOST_AUTO_TEST_CASE(test_sum_fast_stable)
+{
+    std::cout << "=================== Complexity of test_sum_fast_stable =======" << std::endl;
+    evaluate_complexity(
+            sum_fast_stable,
+            generator,
+            {1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            [](size_t n){ return n; },
+            "n"
+    );
+}
 
 
+
+BOOST_AUTO_TEST_CASE(test_sum_fast)
+{
+    std::cout << "=================== Complexity of sum_fast ========" << std::endl;
+    evaluate_complexity(
+            sum_fast,
+            generator,
+            {1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            [](size_t n){ return n; },
+            "n"
+    );
+}
+
+
+
+BOOST_AUTO_TEST_CASE(test_sum_fast_optimized)
+{
+    std::cout << "=============== Complexity of sum_fast_optimized ========" << std::endl;
+    evaluate_complexity(
+            sum_fast_optimized,
+            generator,
+            {1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            [](size_t n){ return n; },
+            "n"
+    );
+}
+
+BOOST_AUTO_TEST_CASE(test_sum_fast_accurate)
+{
+    std::cout << "=============== Complexity of sum_fast_accurate ========" << std::endl;
+    evaluate_complexity(
+            sum_fast_accurate,
+            generator,
+            //{1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            {3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            [](size_t n){ return n; },
+            "n"
+    );
+}
+
+
+BOOST_AUTO_TEST_CASE(test_sum_fast_accurate2)
+{
+    std::cout << "=============== Complexity of sum_fast_accurate ========" << std::endl;
+    evaluate_complexity(
+            sum_fast_accurate2,
+            generator,
+            //{1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            {3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+            [](size_t n){ return n; },
+            "n"
+    );
+}
+
+
+
+//BOOST_AUTO_TEST_CASE(test_sum_f50)
+//{
+//    std::cout << "=============== Complexity of sum_fast_accurate ========" << std::endl;
+//    evaluate_complexity(
+//            sum_simple<float_50>,
+//            // generator,
+//            generate_exponential_pos_neg_pairs,
+//            {1e2, 3.2e2, 1e3, 3.2e3, 1e4, 3.2e4, 1e5, 3.2e5, 1e6, 3.2e6, 1e7 },
+//            [](size_t n){ return n; },
+//            "n"
+//    );
+//}
 
 
 

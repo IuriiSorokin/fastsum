@@ -6,9 +6,44 @@
 #include "sum.h"
 #include "dbg.h"
 #include <iomanip>
+#include <limits>
 
 using float_100  = boost::multiprecision::cpp_dec_float_100;
 
+BOOST_AUTO_TEST_CASE(test_exp)
+{
+    DBG( std::numeric_limits<double>::min_exponent );
+    DBG( std::numeric_limits<double>::max_exponent );
+
+    int e;
+    DBG( std::numeric_limits<double>::min() );
+    DBG( std::numeric_limits<double>::max() );
+    DBG( get_exponent( std::numeric_limits<double>::min() ) );
+           std::frexp( std::numeric_limits<double>::min(), &e ); DBG( e );
+    DBG( get_exponent( std::numeric_limits<double>::max() ) );
+           std::frexp( std::numeric_limits<double>::max(), &e ); DBG( e );
+    DBG( get_exponent( - std::numeric_limits<double>::max() ) );
+           std::frexp( - std::numeric_limits<double>::max(), &e ); DBG( e );
+
+    DBG( get_exponent( -0.7e-308 ) );
+           std::frexp( -0.7e-308, &e ); DBG( e );
+
+    DBG( get_exponent( -0.7e-307 ) );
+           std::frexp( -0.7e-307, &e ); DBG( e );
+
+    DBG( get_exponent(  0.7e-307 ) );
+           std::frexp(  0.7e-307, &e ); DBG( e );
+
+    DBG( get_exponent( -0.7e307 ) );
+           std::frexp( -0.7e307, &e ); DBG( e );
+
+    DBG( get_exponent(  0.7e307 ) );
+           std::frexp(  0.7e307, &e ); DBG( e );
+
+    DBG( get_exponent(  0.7e308 ) );
+           std::frexp(  0.7e308, &e ); DBG( e );
+
+}
 
 BOOST_AUTO_TEST_CASE(test_sum1)
 {
