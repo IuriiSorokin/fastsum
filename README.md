@@ -116,7 +116,10 @@ The summing part of `sum3` has indeed the complexity of `n*log(n)`:
 ```
 
 
+# Better summing algorithms
 
+For summing positive numbers with a double precision Kahan algorithm is sufficient.
+It has linear complexity with a relatively low constant:
 
 ```
 =================== Complexity of kahan_classic ==============
@@ -133,7 +136,10 @@ The summing part of `sum3` has indeed the complexity of `n*log(n)`:
  1000000    3.194400e+03    0.000000e+00    3.194400e-03
  3200000    1.040360e+04    0.000000e+00    3.251125e-03
 10000000    3.108460e+04    0.000000e+00    3.108460e-03
+```
 
+It is interesting to notice that a slight modification of the Kahan algorithm works 3 times faster:
+```
 =================== Complexity of kahan_optimized ============
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n)
@@ -148,22 +154,12 @@ The summing part of `sum3` has indeed the complexity of `n*log(n)`:
  1000000    1.030600e+03    0.000000e+00    1.030600e-03
  3200000    3.378200e+03    0.000000e+00    1.055687e-03
 10000000    1.057840e+04    0.000000e+00    1.057840e-03
+```
+This difference is not understood, as both algorithms perform the same number of arithmetic operations per iteration. Also,  when compiled with g++ 6.3 with "-O3", both algorithms perform three (not four) "assignments". The differences are that the original algorithm performs one addition and three subtractions, and the "optimized" performs two additions and two subtractions. Also the operation sequence is different, which may result in different latencies. 
 
-=================== Complexity of sum_simple_double ==========
-            Avg time of      Avg relative 
- N Items   best 5/7 runs   error all runs   time/(n)
-     100    0.000000e+00    2.047391e-16    0.000000e+00
-     320    0.000000e+00    4.205741e-16    0.000000e+00
-    1000    0.000000e+00    8.750902e-16    0.000000e+00
-    3200    2.000000e+00    1.130620e-15    6.250000e-04
-   10000    7.000000e+00    1.462971e-15    7.000000e-04
-   32000    2.400000e+01    4.898259e-15    7.500000e-04
-  100000    7.500000e+01    6.592808e-15    7.500000e-04
-  320000    2.400000e+02    9.472835e-15    7.500000e-04
- 1000000    7.794000e+02    1.484691e-14    7.794000e-04
- 3200000    2.582000e+03    3.104851e-14    8.068750e-04
-10000000    7.949600e+03    6.796279e-14    7.949600e-04
 
+Even faster and simpler solution would be to perform straightforward summing with `long double` accumulator:
+```
 =================== Complexity of sum_simple<long double> =====
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n)
@@ -178,7 +174,31 @@ The summing part of `sum3` has indeed the complexity of `n*log(n)`:
  1000000    7.786000e+02    0.000000e+00    7.786000e-04
  3200000    2.576800e+03    2.662311e-17    8.052500e-04
 10000000    7.952200e+03    0.000000e+00    7.952200e-04
+```
 
+
+On the given architecure using `long double` works as fast as straightforward summing:
+```
+=================== Complexity of sum_simple_double ==========
+            Avg time of      Avg relative 
+ N Items   best 5/7 runs   error all runs   time/(n)
+     100    0.000000e+00    2.047391e-16    0.000000e+00
+     320    0.000000e+00    4.205741e-16    0.000000e+00
+    1000    0.000000e+00    8.750902e-16    0.000000e+00
+    3200    2.000000e+00    1.130620e-15    6.250000e-04
+   10000    7.000000e+00    1.462971e-15    7.000000e-04
+   32000    2.400000e+01    4.898259e-15    7.500000e-04
+  100000    7.500000e+01    6.592808e-15    7.500000e-04
+  320000    2.400000e+02    9.472835e-15    7.500000e-04
+ 1000000    7.794000e+02    1.484691e-14    7.794000e-04
+ 3200000    2.582000e+03    3.104851e-14    8.068750e-04
+10000000    7.949600e+03    6.796279e-14    7.949600e-04
+```
+
+# Accurate summing of arbitrary magnitude, signed floating point numbers.
+
+
+```
 =============== Complexity of sum_fast_accurate ========
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n)
@@ -193,8 +213,12 @@ The summing part of `sum3` has indeed the complexity of `n*log(n)`:
  1000000    1.982480e+04    0.000000e+00    1.982480e-02
  3200000    6.370620e+04    0.000000e+00    1.990819e-02
 10000000    2.006038e+05    0.000000e+00    2.006038e-02
+```
 
-=============== Complexity of sum_fast_accurate ========
+
+
+```
+=============== Complexity of sum_accurate_power ========
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n)
      100    3.200000e+00    0.000000e+00    3.200000e-02
