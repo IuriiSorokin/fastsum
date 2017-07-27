@@ -18,17 +18,19 @@ There are two time-consuming actions: the construction of the multiset, and the 
 In the summing part the most time-consuming operations are insertion and erasure of the elements. For both the complexity is `log(n)` (where `n` is the size of the multiset). The complexity of the summing part is therefore also `N*log(N)`, with, presumably, different constants.
 
 # Measurement of the actual exectuion time.
-The actual exection time has been measured as a function of the sample size, and compared with the above estimates for the complexity. The complexity estimates for `sum1` and `sum2` are consistent with the measurements, whereas the `sum3` execution time rose slightly faster than `N*log(N)`, presumably dominated by memory allocations. 
+The actual exection time has been measured as a function of the sample size, and compared with the above estimates for the complexity. The complexity estimates for `sum1` and `sum2` are consistent with the measurements, whereas the `sum3` execution time rose slightly faster than `N*log(N)`. 
 
 The test data was generated using `std::exponential_distribution` with `lamda = 0.01`. Exponential distribution is one of the worst cases for the summing algorithms, as when many small items are added to a large intermediate sum the rounding error accumulates rapidly.
 
 The results are in the tables below. 
-The first column is the number of items (numbers) in the sample.
-The second is the mean best time: for each number of items the algorithm was executed 7 times, and the 5 best (smallest) exectuion times were selected, out of which the average was calcuated.
+The first column is the number of items in the sample.
+The second is the average best time: for each number of items the algorithm was executed 7 times, and the 5 best (smallest) exectuion times were selected, out of which the average was calcuated.
 The thrid column is the mean relative error for all 7 executions. The relative error is defined as `abs(correct_sum - evaluated_sum) / correct_sum`.
-In the fourth column the average best time is compared with the estimated complexity for the given algorithm. The estimated complexity is compatible with the measurement if the ratio stays constant.
+In the fourth column the average best time is compared with the estimated complexity for the given algorithm (the estimated complexity is compatible with the measurement if the ratio stays constant with the increase of the sample size).
 
+The progrmam was compiled with g++ 6.2.1 with "-O3", and executed on Intel i7-4790 @ 3.60GHz. The execution time is specified in microseconds. 
 
+As mentioned above, for `sum1` and `sum2` the complexity estimates are compatible with the measurements:
 
 ```
 =================== Complexity of sum1 =======================
@@ -42,7 +44,8 @@ In the fourth column the average best time is compared with the estimated comple
    32000    3.949698e+06    8.303712e-17    3.718253e-04
   100000    4.279730e+07    2.658199e-17    3.717326e-04
   320000    4.758187e+08    4.984892e-17    3.665698e-04
-  
+```
+```  
   =================== Complexity of sum2 =======================
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n^2)
@@ -54,7 +57,10 @@ In the fourth column the average best time is compared with the estimated comple
    32000    2.062521e+06    4.165074e-17    2.014181e-03
   100000    2.028747e+07    5.305061e-17    2.028747e-03
   320000    2.073556e+08    3.322726e-17    2.024957e-03
-  
+```
+
+For `sum3` the execution time rises slightly faster:
+```
 =================== Complexity of sum3 =======================
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n*log(n))
@@ -69,7 +75,12 @@ In the fourth column the average best time is compared with the estimated comple
  1000000    7.919784e+05    4.260454e-17    5.732531e-02
  3200000    3.247844e+06    5.320052e-17    6.775981e-02
 10000000    1.246619e+07    5.107194e-17    7.734285e-02
+```
 
+The `sum3` algorithm was then split into two parts: construction of the multiset and the actual summing. Each part was profiled sepearately. The construction-only part does not perform the summing (returns the smallest element in the multiset), so its relative error should be ignored. 
+
+It turned out, it is the construction time that rises faster than `N*log(N)`. Most likely this is caused by memory allocation. To check this one can provide a custom constant-time allocator, that would reserve the memory from the OS in advance. However, this goes already too far beyond the scope of the subject.
+```
 =================== Complexity of sum3_construct_only ========
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n*log(n))
@@ -84,7 +95,10 @@ In the fourth column the average best time is compared with the estimated comple
  1000000    5.680766e+05    1.000000e+00    4.111876e-02
  3200000    2.466015e+06    1.000000e+00    5.144851e-02
 10000000    9.676081e+06    1.000000e+00    6.003241e-02
+```
 
+The summing part of `sum3` has indeed the complexity of `n*log(n)`:
+```
 =================== Complexity of sum3_sum_only ==============
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n*log(n))
@@ -99,7 +113,12 @@ In the fourth column the average best time is compared with the estimated comple
  1000000    3.288376e+05    6.388306e-17    2.380206e-02
  3200000    1.139498e+06    5.324321e-17    2.377336e-02
 10000000    3.751500e+06    3.404994e-17    2.327508e-02
+```
 
+
+
+
+```
 =================== Complexity of kahan_classic ==============
             Avg time of      Avg relative 
  N Items   best 5/7 runs   error all runs   time/(n)
