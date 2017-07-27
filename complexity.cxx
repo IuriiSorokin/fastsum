@@ -195,7 +195,7 @@ BOOST_AUTO_TEST_CASE(test_sum_accurate)
 
 BOOST_AUTO_TEST_CASE(test_sum_accurate_power)
 {
-    std::cout << "=============== Complexity of sum_fast_accurate ========" << std::endl;
+    std::cout << "=============== Complexity of sum_accurate_power ========" << std::endl;
     evaluate_complexity(
             sum_accurate,
             generate_uniform_power_pos_neg_pairs,

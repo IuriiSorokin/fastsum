@@ -7,7 +7,7 @@
 #include "dbg.h"
 
 using float_100  = boost::multiprecision::cpp_dec_float_100;
-using float_500  = boost::multiprecision::number< boost::multiprecision::cpp_dec_float<500> >;
+using float_1000  = boost::multiprecision::number< boost::multiprecision::cpp_dec_float<1000> >;
 
 BOOST_AUTO_TEST_CASE(test_exponential_positive)
 {
@@ -19,17 +19,17 @@ BOOST_AUTO_TEST_CASE(test_exponential_positive)
 BOOST_AUTO_TEST_CASE(test_uniform_power_pos_neg_pairs)
 {
     auto s = generate_uniform_power_pos_neg_pairs( 1000000 );
-    BOOST_CHECK_EQUAL( s.sum, sum_simple<float_500>( s.v ) );
+    BOOST_CHECK_EQUAL( s.sum, sum_simple<float_1000>( s.v ) );
 }
 
 
 
 BOOST_AUTO_TEST_CASE(test_uniform_power_pos_neg_pairs_print)
 {
+    //    std::cout << std::setprecision(17);
     //    auto s = generate_uniform_power_pos_neg_pairs( 1000000 );
     //    for( auto x : s.v ) {
     //        DBG( x );
     //    }
-
     // BOOST_CHECK_EQUAL( s.sum, sum_simple<float_500>( s.v ) );
 }
