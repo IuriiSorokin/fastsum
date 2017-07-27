@@ -136,7 +136,7 @@ get_exponent_decode_iec559( double x ) {
     union U {
         double value;
         struct {
-            size_t mantisa  : 52;
+            size_t mantissa  : 52;
             size_t exponent : 11;
             size_t sign     :  1;
         } parts;

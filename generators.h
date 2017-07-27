@@ -133,20 +133,20 @@ generate_exponential_positive( size_t n )
 inline Series
 generate_uniform_power_pos_neg_pairs( size_t n )
 {
-    auto mantisa = std::uniform_real_distribution<double>(0,1);
+    auto mantissa = std::uniform_real_distribution<double>(0,1);
     auto power = std::uniform_int_distribution<int>(-250,250);
     Series series;
     series.v.reserve( n );
 
     while( series.v.size() < n-2 ) {
-        auto m = mantisa( gRandomEngine() );
+        auto m = mantissa( gRandomEngine() );
         auto p = power( gRandomEngine() );
         double x = m * std::pow( 10, p );
         series.v.push_back( x );
         series.v.push_back( -x );
     }
 
-    auto m = mantisa( gRandomEngine() );
+    auto m = mantissa( gRandomEngine() );
     auto p = power( gRandomEngine() );
     double x = m * std::pow( 10, p );
 
