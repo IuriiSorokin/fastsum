@@ -25,7 +25,7 @@ The test data was generated using `std::exponential_distribution` with `lamda = 
 The results are in the tables below. 
 The first column is the number of items in the sample.
 The second is the average best time: for each number of items the algorithm was executed 7 times, and the 5 best (smallest) exectuion times were selected, out of which the average was calcuated.
-The thrid column is the mean relative error for all 7 executions. The relative error is defined as `abs(correct_sum - evaluated_sum) / correct_sum`.
+The thrid column is the mean relative error for all 7 executions. The relative error is defined as `abs(correct_sum - evaluated_sum) / correct_sum`. To determine the correct sum a straightforward summing into a 50-digit accumulator (`boost::multipriecision::cpp_dec_float_50`) is performed. 
 In the fourth column the average best time is compared with the estimated complexity for the given algorithm (the estimated complexity is compatible with the measurement if the ratio stays constant with the increase of the sample size).
 
 The progrmam was compiled with g++ 6.2.1 with "-O3", and executed on Intel i7-4790 @ 3.60GHz. The execution time is specified in microseconds. 
