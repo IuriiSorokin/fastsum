@@ -196,27 +196,59 @@ On the given architecure using `long double` works as fast as straightforward su
 ```
 
 # Accurate summing of arbitrary magnitude, signed floating point numbers.
-
+The above algorithms work well if all items in the series are of the same sign. The real challenge is to sum up a series where small magnitude items are alternated items of very large magnitude, and where the large magnitude items cancel each other. Such seris was generated, and here is a sample of it: 
 
 ```
-=============== Complexity of sum_fast_accurate ========
-            Avg time of      Avg relative 
- N Items   best 5/7 runs   error all runs   time/(n)
-     100    4.000000e+00    0.000000e+00    4.000000e-02
-     320    8.000000e+00    0.000000e+00    2.500000e-02
-    1000    2.160000e+01    0.000000e+00    2.160000e-02
-    3200    6.500000e+01    0.000000e+00    2.031250e-02
-   10000    1.992000e+02    0.000000e+00    1.992000e-02
-   32000    6.360000e+02    0.000000e+00    1.987500e-02
-  100000    1.979800e+03    0.000000e+00    1.979800e-02
-  320000    6.308600e+03    0.000000e+00    1.971438e-02
- 1000000    1.982480e+04    0.000000e+00    1.982480e-02
- 3200000    6.370620e+04    0.000000e+00    1.990819e-02
-10000000    2.006038e+05    0.000000e+00    2.006038e-02
+...
+x=1.8575281530580319e+210
+x=3.3884099821153498e-106
+x=-3.8857981262853762e+194
+x=8.9897381277965731e+112
+x=-3.9741711899610317e-175
+x=-8.671592698368976e-35
+x=1.56133087185542e-245
+x=1.6376404910614448e-159
+x=2.6089319521096781e-06
+x=3.4866478356959178e+231
+x=1.3653776235161124e-150
+x=-4.6322861074045758e-32
+x=-3.5477477215913789e+134
+x=-2.0454953318708351e+66
+x=-5.9481604766332383e+149
+x=-1.7791075413781876e-15
+x=6.5658227245360162e+70
+x=-4.7336541817979606e+95
+x=-6.6041541719810101e-135
+x=7.4540502258961225e-103
+x=-4.0286281917637449e+66
+x=9.7359097254333743e+79
+x=5.5784281300142513e-16
+x=-9.651739207641501e-46
+x=-4.8458466677654542e-214
+x=-1.4952955156891328e-164
+x=5.3543711914307544e+195
+x=-4.9135734097542808e-109
+x=8.4402963415163137e-77
+x=5.3846858081948716e-43
+x=-3.297936946791371e-194
+x=4.5206332172407608e-49
+x=8.0509093849033469e+74
+x=-7.6214720734124473e-241
+x=2.1380384736985905e+225
+x=9.4895261588191543e-178
+x=6.171888784975358e-133
+x=-1.9102580284220911e-214
+x=-6.7142904188801203e+115
+x=-3.2562264056940073e-130
+x=-4.0102432737434831e-120
+x=-6.7651229246342124e+97
+x=-9.8762035554073937e-147
+x=7.9989456161296781e-234
+x=9.3098413556065148e-214
+...
 ```
 
-
-
+The problem can be solved by using several accumulators: one accumulators for items of each order of magnitude. When addition is performed, the numeric error is determined in the same way as in the Kahan algorithm. The numeric error is then added up in the same way as items from the original series. The procedure repeats until the error becomes exactly zero. The algorithm gives correct result for the above arbitrary-power series, and has a linear complexity with only 20x larger constant than the straightforward summing:
 ```
 =============== Complexity of sum_accurate_power ========
             Avg time of      Avg relative 
@@ -233,5 +265,5 @@ On the given architecure using `long double` works as fast as straightforward su
  3200000    5.512980e+04    0.000000e+00    1.722806e-02
 10000000    1.726314e+05    0.000000e+00    1.726314e-02
 ```
-
+The correctness of the sum was also cross-checked with straightforward summing using 1000-digit accumulator, from `boost::multiprecision`.
 
